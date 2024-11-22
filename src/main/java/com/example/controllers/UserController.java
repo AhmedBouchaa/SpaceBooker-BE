@@ -9,7 +9,9 @@ import com.example.entities.Reservation;
 import com.example.entities.User;
 import com.example.entities.Reserver;
 import com.example.repositories.ReservationRepository;
+import com.example.repositories.ReserverRepository;
 import com.example.repositories.UserRepository;
+import com.example.repositories.EventRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,10 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private ReserverRepository reserverRepository;
+    @Autowired
+    private final EventRepository eventRepository;
     @PostMapping
     public User createUser(@RequestBody User user) {
         if(user == null){
@@ -37,14 +43,6 @@ public class UserController {
 
         return saveduser;
     }
-    @GetMapping
-    public List<User> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        if(users.isEmpty()){
-            throw new RuntimeException("didn't find this user");
-        }
-        return users;
-    }
     @GetMapping("/{id}")
     public User getUserById(@PathVariable long id) {
         Optional<User> user=userRepository.findById(id);
@@ -53,20 +51,17 @@ public class UserController {
         }
         return user.get();
     }
-    /*@DeleteMapping("/{id}")
-    public String deleteuser(@PathVariable long id) {
-        Optional<Reserver> user= userRepository.findById(id);
-        if(user.isEmpty()){
+    @DeleteMapping("/{id}")
+    public void deleteuser(@PathVariable long id) {
+        Optional<Reserver> reserver= reserverRepository.findById(id);
+        if(reserver.isEmpty()){
             throw new RuntimeException("didn't find this user");
         }
-        if( ((Reserver)user).getReservations().isEmpty()){
-            userRepository.deleteById(id);
-            return "user supprimee avec succèes";
-        }
-        else{
-            throw new RuntimeException("Impossible de supprimer le user car il a effectees des reservations");
-        }
-    }*/
+        userRepository.deleteById(id);
+        reservationRepository.deleteByUserId(id);
+        eventRepository.deleteByUserId(id);
+    }
+    
     @PutMapping
     public User updateuser(@RequestBody User upuser)
     {

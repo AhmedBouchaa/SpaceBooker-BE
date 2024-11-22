@@ -5,8 +5,8 @@ import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
+
 @Entity
 @Data
 public class Reserver extends User {
