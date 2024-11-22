@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import com.example.demo.entities.Admin;
+import com.example.demo.repositories.*;
 import jdk.jshell.execution.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -7,10 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.entities.Reservation;
 import com.example.demo.entities.User;
 import com.example.demo.entities.Reserver;
-import com.example.demo.repositories.ReservationRepository;
-import com.example.demo.repositories.ReserverRepository;
-import com.example.demo.repositories.UserRepository;
-import com.example.demo.repositories.EventRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +24,8 @@ public class UserController {
 	private ReserverRepository reserverRepository;
 	@Autowired
 	private EventRepository eventRepository;
-
+	@Autowired
+	private AdminRepository adminRepository;
 	@PostMapping
 	public Reserver createReserver(@RequestBody Reserver reserver) {
 		if (reserver == null) {
@@ -64,16 +63,29 @@ public class UserController {
 		eventRepository.deleteByUserId(id);
 	}
 
-	@PutMapping
-	public User updateuser(@RequestBody User upuser) {
-		User existinguser = userRepository.findById(upuser.getId())
+	@PutMapping("/admin")
+	public Admin updateadmin(@RequestBody Admin upuser) {
+		Admin existinguser = adminRepository.findById(upuser.getId())
 				.orElseThrow(() -> new RuntimeException("didn't find this user"));
-		Optional<User> user = userRepository.findByEmail(upuser.getEmail());
+		Optional<Admin> user = adminRepository.findByEmail(upuser.getEmail());
 		existinguser.setName(upuser.getName());
 		existinguser.setSurname(upuser.getSurname());
+		existinguser.setEmail(upuser.getEmail());
 		existinguser.setTel(upuser.getTel());
 		existinguser.setPwd(upuser.getPwd());
-		return userRepository.save(existinguser);
+		return adminRepository.save(existinguser);
+	}
+	@PutMapping("/reserver")
+	public Reserver updatereserver(@RequestBody Reserver upuser) {
+		Reserver existinguser = reserverRepository.findById(upuser.getId())
+				.orElseThrow(() -> new RuntimeException("didn't find this user"));
+		Optional<Reserver> user = reserverRepository.findByEmail(upuser.getEmail());
+		existinguser.setName(upuser.getName());
+		existinguser.setSurname(upuser.getSurname());
+		existinguser.setEmail(upuser.getEmail());
+		existinguser.setTel(upuser.getTel());
+		existinguser.setPwd(upuser.getPwd());
+		return reserverRepository.save(existinguser);
 	}
 
 	@GetMapping("/{id}/reservations")
