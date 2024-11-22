@@ -2,10 +2,8 @@ package com.example.controllers;
 
 import java.util.Optional;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.entities.User;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.entities.Event;
 
@@ -14,8 +12,17 @@ import com.example.repositories.EventRepository;
 @RestController
 @RequestMapping("/events")
 public class EventController {
-	
+
 	private EventRepository eventRepository;
+
+	@GetMapping("/{id}")
+	public Event getEventById(@PathVariable long id) {
+		Optional<Event> event=eventRepository.findById(id);
+		if(event.isEmpty()){
+			throw new RuntimeException("didn't find this event");
+		}
+		return event.get();
+	}
 	@PostMapping
 	public Event createEvent(@RequestBody Event event) {
 		//Verify that Event is not null

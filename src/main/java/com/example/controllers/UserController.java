@@ -26,7 +26,7 @@ public class UserController {
     @Autowired
     private ReserverRepository reserverRepository;
     @Autowired
-    private final EventRepository eventRepository;
+    private EventRepository eventRepository;
     @PostMapping
     public User createUser(@RequestBody User user) {
         if(user == null){
@@ -109,13 +109,13 @@ public class UserController {
         Reserver reserver = reserverRepository.findById(userId).orElseThrow(()->new RuntimeException("user non trouve"));
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(()->new RuntimeException("Reservation non trouve"));
 
-        if(!(reserver.getReservations().contains(reservation)){
+        if(!(reserver.getReservations().contains(reservation))){
             throw new RuntimeException("la reservation n'est pas affecter a cet user");
         }
         reserver.getReservations().remove(reservation);
-        reservationRepository.delete(reservation.id);
-        eventRepository.deleteByReservationId(reservation.id)
-        userRepository.save(user);
+        reservationRepository.delete(reservation);
+        eventRepository.deleteByReservationId(reservation);
+        userRepository.save(reserver);
         return "Reservation retire de l'user avec succes";
     }
 }
