@@ -16,7 +16,8 @@ import com.example.entities.User;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     Optional<Reservation> findByUser(User user);
     Optional<Reservation> findById(Long id);
-    
+    Optional<Reservation> delete(Long id);
+
     @Modifying
     @Query("DELETE FROM Reservation r WHERE r.reserver.id = :id")
     void deleteByUserId(@Param("id") Long id);

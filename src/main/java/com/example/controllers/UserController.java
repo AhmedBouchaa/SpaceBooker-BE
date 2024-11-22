@@ -68,13 +68,9 @@ public class UserController {
         User existinguser = userRepository.findById(upuser.getId())
                 .orElseThrow(()-> new RuntimeException("didn't find this user"));
         Optional<User> user = userRepository.findByEmail(upuser.getEmail());
-        if(user.isPresent() && (!user.get().getEmail().equals(upuser.getEmail()))){
-            throw new RuntimeException("a User with this email already exist");
-        }
         existinguser.setName(upuser.getName());
         existinguser.setSurname(upuser.getSurname());
         existinguser.setTel(upuser.getTel());
-        existinguser.setEmail(upuser.getEmail());
         existinguser.setPwd(upuser.getPwd());
         return userRepository.save(existinguser);
     }
@@ -95,7 +91,7 @@ public class UserController {
         }
         return resultats;
     }
-    @PostMapping("add/{reservationId}/to/{userId}")
+  /*  @PostMapping("add/{reservationId}/to/{userId}")
     public String addReservationTouser(@PathVariable long reservationId, @PathVariable long userId) {
         User user = userRepository.findById(userId).orElseThrow(()->new RuntimeException("user non trouve"));
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(()->new RuntimeException("user non trouve"));
@@ -106,17 +102,19 @@ public class UserController {
         ((Reserver)user).addReservation(reservation);
         userRepository.save(user);
         return "Reservation affecte";
-    }
-    @DeleteMapping("/remove/{reservationId}/to/{userId}")
-    public String removeReservationFromuser(@PathVariable long reservationId, @PathVariable long userId) {
-        User user = userRepository.findById(userId).orElseThrow(()->new RuntimeException("user non trouve"));
-        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(()->new RuntimeException("user non trouve"));
+    }*/
 
-        if(!((Reserver)user).getReservations().contains(reservation)){
+    @DeleteMapping("/remove/{reservationId}/from/{userId}")
+    public String removeReservationFromuser(@PathVariable long reservationId, @PathVariable long userId) {
+        Reserver reserver = reserverRepository.findById(userId).orElseThrow(()->new RuntimeException("user non trouve"));
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(()->new RuntimeException("Reservation non trouve"));
+
+        if(!(reserver.getReservations().contains(reservation)){
             throw new RuntimeException("la reservation n'est pas affecter a cet user");
         }
-        ((Reserver)user).getReservations().remove(reservation);
-        reservation.setReserver(null);
+        reserver.getReservations().remove(reservation);
+        reservationRepository.delete(reservation.id);
+        eventRepository.deleteByReservationId(reservation.id)
         userRepository.save(user);
         return "Reservation retire de l'user avec succes";
     }
