@@ -17,6 +17,7 @@ import com.example.demo.repositories.RoomRepository;
 public class RoomController {
 	@Autowired
 	private RoomRepository roomRepository;
+	@Autowired
 	private BlocRepository blocRepository;
 
 	// create a Room
@@ -39,9 +40,9 @@ public class RoomController {
 		return savedRoom;
 	}
 
-	@GetMapping("/{bloc_id}/Bloc")
-	public List<Room> getRoomsByBlocId(@PathVariable long id) {
-		Bloc bloc = blocRepository.findById(id).orElseThrow(() -> new RuntimeException("Bloc doesn't exist"));
+	@GetMapping("/bloc/{bloc_id}")
+	public List<Room> getRoomsByBlocId(@PathVariable long bloc_id) {
+		Bloc bloc = blocRepository.findById(bloc_id).orElseThrow(() -> new RuntimeException("Bloc doesn't exist"));
 		List<Room> rooms = bloc.getRooms();
 		if (rooms.isEmpty()) {
 			throw new RuntimeException("there is no room in this bloc");

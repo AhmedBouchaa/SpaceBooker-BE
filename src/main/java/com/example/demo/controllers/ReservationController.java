@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.example.demo.entities.Reservation;
 import com.example.demo.entities.User;
 import com.example.demo.repositories.ReservationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.entities.Event;
@@ -18,6 +19,7 @@ import com.example.demo.repositories.EventRepository;
 @RequestMapping("/reservation")
 public class ReservationController {
 
+	@Autowired
 	private ReservationRepository reservationRepository;
 
 	@PostMapping
@@ -33,6 +35,10 @@ public class ReservationController {
 	@GetMapping("in/{date}/from/{start_time}/to/{end_time}")
 	public List<Reservation> getReservationsByDateAndTime(@PathVariable LocalDateTime date,
 			@PathVariable LocalTime start_time, @PathVariable LocalTime end_time) {
+
+		if (end_time.isBefore(start_time)) {
+			throw new IllegalArgumentException("The end time must be after the start time.");
+		}
 		return reservationRepository.findReservationsByDateAndTime(date, start_time, end_time);
 	}
 

@@ -28,20 +28,20 @@ public class UserController {
 	private EventRepository eventRepository;
 
 	@PostMapping
-	public User createUser(@RequestBody User user) {
-		if (user == null) {
+	public Reserver createReserver(@RequestBody Reserver reserver) {
+		if (reserver == null) {
 			throw new RuntimeException("this user can't be null");
 		}
-		if (user.getEmail() == null || user.getEmail().trim().isEmpty() || user.getPwd() == null) {
+		if (reserver.getEmail() == null || reserver.getEmail().trim().isEmpty() || reserver.getPwd() == null) {
 			throw new RuntimeException("the email and password are null");
 		}
-		Optional<User> existinguser = userRepository.findByEmail(user.getEmail());
+		Optional<User> existinguser = userRepository.findByEmail(reserver.getEmail());
 		if (existinguser.isPresent()) {
 			throw new RuntimeException("this email already exite");
 		}
-		User saveduser = userRepository.save(user);
+		Reserver savedreserver = userRepository.save(reserver);
 
-		return saveduser;
+		return savedreserver;
 	}
 
 	@GetMapping("/{id}")
