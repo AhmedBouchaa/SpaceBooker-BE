@@ -36,10 +36,17 @@ public class RoomController {
 		if (existingRoom.isPresent()) {
 			throw new RuntimeException("this num already existe ");
 		}
-		Room savedRoom = roomRepository.save(room);
-		return savedRoom;
+		return roomRepository.save(room);
 	}
 
+	@GetMapping
+	public List<Room> getRooms() {
+		List<Room> rooms = roomRepository.findAll();
+		if (rooms.isEmpty()) {
+			throw new RuntimeException("there is no room");
+		}
+		return rooms;
+	}
 	@GetMapping("/bloc/{bloc_id}")
 	public List<Room> getRoomsByBlocId(@PathVariable long bloc_id) {
 		Bloc bloc = blocRepository.findById(bloc_id).orElseThrow(() -> new RuntimeException("Bloc doesn't exist"));
