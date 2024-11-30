@@ -3,6 +3,8 @@ package com.example.demo.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.demo.entities.Admin;
+import com.example.demo.repositories.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,23 +21,42 @@ public class RoomController {
 	private RoomRepository roomRepository;
 	@Autowired
 	private BlocRepository blocRepository;
-
+	@Autowired
+	private AdminRepository adminRepository;
 	// create a Room
 	@PostMapping
-	public Room createRoom(@RequestBody Room room) {
-		// Verify that Room is not null
+	public Room createRoom(@RequestBody Room room, @RequestParam("bloc_id") int blocId,@RequestParam("admin_id") int adminId) {
+		// Vérifier que la Room n'est pas nulle
 		if (room == null) {
-			throw new RuntimeException("the room can not be null");
+			throw new RuntimeException("La room ne peut pas être nulle");
 		}
-		// Verify that the room num is not null
+
+		// Vérifier que le numéro de la room n'est pas nul
 		if (room.getNum() == 0) {
-			throw new RuntimeException("you should at least give a number to a room");
+			throw new RuntimeException("Vous devez attribuer un numéro à la room");
 		}
-		// Verify that the num doesn't already used
+
+		// Vérifier que le bloc_id n'est pas nul
+		if (blocId == 0) {
+			throw new RuntimeException("Vous devez spécifier un bloc_id");
+		}		// Vérifier que le bloc_id n'est pas nul
+		if (adminId == 0) {
+			throw new RuntimeException("Vous devez spécifier un admin_id");
+		}
+
+		// Vérifier que le numéro n'est pas déjà utilisé
 		Optional<Room> existingRoom = roomRepository.findByNum(room.getNum());
 		if (existingRoom.isPresent()) {
-			throw new RuntimeException("this num already existe ");
+			throw new RuntimeException("Ce numéro de room existe déjà");
 		}
+		Bloc bloc =blocRepository.findById(blocId);
+		// Sauvegarder la room avec bloc_id
+		room.setBloc(bloc);
+
+		Admin admin =adminRepository.findById(adminId);
+		// Sauvegarder la room avec bloc_id
+		room.setAdmin(admin);
+
 		return roomRepository.save(room);
 	}
 

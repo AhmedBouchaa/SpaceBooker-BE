@@ -14,4 +14,5 @@ public interface ReserverRepository extends JpaRepository<Reserver, Long> {
 	Optional<Reserver> findByEmail(String email);
 
 
+    Reserver findById(int reserverId);
 }

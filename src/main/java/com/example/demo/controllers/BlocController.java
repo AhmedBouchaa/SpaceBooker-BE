@@ -18,7 +18,7 @@ public class BlocController {
     @Autowired
     private BlocRepository blocRepository;
     @GetMapping("/{id}")
-    public Bloc getUserById(@PathVariable long id) {
+    public Bloc getBlocById(@PathVariable long id) {
         Optional<Bloc> bloc = blocRepository.findById(id);
         if (bloc.isEmpty()) {
             throw new RuntimeException("didn't find this bloc");

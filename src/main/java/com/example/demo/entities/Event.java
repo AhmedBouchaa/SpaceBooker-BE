@@ -1,5 +1,6 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -18,10 +19,12 @@ public class Event {
 
 	private String img;
 
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "reservation_id")
 	private Reservation reservation;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "reserver_id")
 	private Reserver reserver;

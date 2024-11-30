@@ -1,5 +1,6 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -27,12 +28,15 @@ public class Reservation {
 	private String state;
 	@Getter
 	@Setter
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "event_id")
 	private Event event;
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "reserver_id")
 	private Reserver reserver;
+	@JsonIgnore
 	@Getter
 	@Setter
 	@ManyToOne

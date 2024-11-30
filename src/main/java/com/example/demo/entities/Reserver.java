@@ -2,6 +2,7 @@ package com.example.demo.entities;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.Data;
 @Entity
 @Data
 public class Reserver extends User {
+	@JsonIgnore
 	@OneToMany(mappedBy = "reserver")
 	private List<Reservation> reservations;
 

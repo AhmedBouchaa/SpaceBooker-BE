@@ -1,7 +1,9 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.List;
 
@@ -18,13 +20,17 @@ public class Room {
 	private int capacite;
 	private String img;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "room")
 	private List<Reservation> reservations;
 
+
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "bloc_id")
 	private Bloc bloc;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "admin_id")
 	private Admin admin;

@@ -10,4 +10,6 @@ import com.example.demo.entities.Room;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 	Optional<Room> findByNum(int num);
+
+	Room findById(int roomId);
 }
