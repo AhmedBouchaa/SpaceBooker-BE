@@ -1,6 +1,10 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -14,15 +18,16 @@ public class Reservation {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	@Getter
-	@Setter
-	private LocalDateTime date;
-	@Getter
-	@Setter
-	private LocalTime start_time;
-	@Getter
-	@Setter
-	private LocalTime end_time;
+	@Getter@Setter
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@Column(name = "start_time")
+	private LocalDateTime start_time;
+
+	@Getter@Setter
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@Column(name = "end_time")
+	private LocalDateTime end_time;
+
 	@Getter
 	@Setter
 	private String state;
@@ -36,7 +41,6 @@ public class Reservation {
 	@ManyToOne
 	@JoinColumn(name = "reserver_id")
 	private Reserver reserver;
-	@JsonIgnore
 	@Getter
 	@Setter
 	@ManyToOne
@@ -51,27 +55,19 @@ public class Reservation {
 		this.id = id;
 	}
 
-	public LocalDateTime getDate() {
-		return date;
-	}
-
-	public void setDate(LocalDateTime date) {
-		this.date = date;
-	}
-
-	public LocalTime getStart_time() {
+	public LocalDateTime getStart_time() {
 		return start_time;
 	}
 
-	public void setStart_time(LocalTime start_time) {
+	public void setStart_time(LocalDateTime start_time) {
 		this.start_time = start_time;
 	}
 
-	public LocalTime getEnd_time() {
+	public LocalDateTime getEnd_time() {
 		return end_time;
 	}
 
-	public void setEnd_time(LocalTime end_time) {
+	public void setEnd_time(LocalDateTime end_time) {
 		this.end_time = end_time;
 	}
 

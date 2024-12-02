@@ -25,7 +25,6 @@ public class Room {
 	private List<Reservation> reservations;
 
 
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "bloc_id")
 	private Bloc bloc;

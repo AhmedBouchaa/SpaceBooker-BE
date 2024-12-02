@@ -30,8 +30,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	@Query("DELETE FROM Reservation r WHERE r.reserver.id = :id")
 	void deleteByUserId(@Param("id") Long id);
 
-	@Query("from Reservation r")// where r.date = :date and ((r.start_time <= :start_time and r.end_time >= :start_time) or (r.start_time <= :end_time and r.end_time >= :end_time) or (r.start_time >= :start_time and r.end_time <= :end_time) or (r.start_time <= :start_time and r.end_time >= :end_time))")
-	List<Reservation> findReservationsByDateAndTime(@Param("date") LocalDateTime date, @Param("start_time") LocalTime start_time, @Param("end_time") LocalTime end_time);
+	@Query("from Reservation r where NOT (r.end_time <= :start_time OR r.start_time >= :end_time)")
+	List<Reservation> findReservationsByDateAndTime(@Param("start_time") LocalDateTime start_time, @Param("end_time") LocalDateTime end_time);
 
-    Reservation findById(int reservationId);
+	Reservation findById(int reservationId);
+
+	@Query("from Reservation r where r.room.id = :roomId and NOT (r.end_time <= :start_time OR r.start_time >= :end_time)")
+	Optional<Reservation> findByRoomAndDate(@Param("roomId") Long roomId, @Param("start_time") LocalDateTime start_time, @Param("end_time") LocalDateTime end_time);
+
+
 }

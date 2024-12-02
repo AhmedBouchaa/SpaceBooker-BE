@@ -10,8 +10,9 @@ import com.example.demo.repositories.ReservationRepository;
 import com.example.demo.repositories.ReserverRepository;
 import com.example.demo.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.example.demo.repositories.EventRepository;
 
 @RestController
@@ -31,6 +32,14 @@ public class ReservationController {
 	public Reservation createReservation(@RequestBody Reservation reservation,@RequestParam("reserver_id") int reserverId,@RequestParam("event_id") int eventId,@RequestParam("room_id") int roomId) {
 		if (reservation == null) {
 			throw new RuntimeException("this reservation can't be null");
+		}
+		
+		System.out.println("Received reservation data:");
+		System.out.println("Start time: " + reservation.getStart_time());
+		System.out.println("End time: " + reservation.getEnd_time());
+		
+		if (reservation.getStart_time() == null || reservation.getEnd_time() == null) {
+			throw new RuntimeException("start_time and end_time cannot be null");
 		}
 		if (reserverId == 0) {
 			throw new RuntimeException("Vous devez spécifier un reserverId");
@@ -53,18 +62,34 @@ public class ReservationController {
 
 		Room room =roomRepository.findById(roomId);
 		reservation.setRoom(room);
-
 		return reservationRepository.save(reservation);
 	}
 
-	@GetMapping("in/{date}/from/{start_time}/to/{end_time}")
-	public List<Reservation> getReservationsByDateAndTime(@PathVariable LocalDateTime date,
-			@PathVariable LocalTime start_time, @PathVariable LocalTime end_time) {
+	@GetMapping("from/{start_time}/to/{end_time}")
+	public List<Reservation> getReservationsByDateAndTime(
+			@PathVariable LocalDateTime start_time, @PathVariable LocalDateTime end_time) {
 
 		if (end_time.isBefore(start_time)) {
 			throw new IllegalArgumentException("The end time must be after the start time.");
 		}
-		return reservationRepository.findReservationsByDateAndTime(date, start_time, end_time);
+		return reservationRepository.findReservationsByDateAndTime(start_time, end_time);
+	}
+	@GetMapping("/check")
+	public boolean checkForDuplicateReservation(
+			@RequestParam Long roomId,
+			@RequestParam String start_time,
+			@RequestParam String end_time) {
+		LocalDateTime convertedDateStart = LocalDateTime.parse(start_time);
+		LocalDateTime convertedDateEnd = LocalDateTime.parse(end_time);
+		// Rechercher si une réservation existe déjà avec les mêmes paramètres
+		Optional<Reservation> existingReservation = reservationRepository
+				.findByRoomAndDate(roomId, convertedDateStart,convertedDateEnd);
+
+		// Si une réservation existe déjà
+		if (existingReservation.isPresent()) {
+			return false;
+		}
+		return true;
 	}
 
 }
