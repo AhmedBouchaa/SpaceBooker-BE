@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.demo.entities.Reserver;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -38,5 +39,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	@Query("from Reservation r where r.room.id = :roomId and NOT (r.end_time <= :start_time OR r.start_time >= :end_time)")
 	Optional<Reservation> findByRoomAndDate(@Param("roomId") Long roomId, @Param("start_time") LocalDateTime start_time, @Param("end_time") LocalDateTime end_time);
 
-
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM Reservation r WHERE r.room.id = :id")
+	void deleteByRoomId(@Param("id") Long id);
 }
