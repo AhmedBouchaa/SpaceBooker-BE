@@ -92,22 +92,29 @@ public class RoomController {
 		if (room == null) {
 			throw new RuntimeException("La room ne peut pas être nulle");
 		}
-
-		/*// Vérifier que le bloc_id n'est pas nul
-		if (blocId == 0) {
-			throw new RuntimeException("Vous devez spécifier un bloc_id");
-		}
-		// Vérifier que le bloc_id n'est pas nul
-		if (adminId == 0) {
-			throw new RuntimeException("Vous devez spécifier un admin_id");
-		}
-		Bloc bloc =blocRepository.findById(blocId);
-		room.setBloc(bloc);
-
-		Admin admin =adminRepository.findById(adminId);
-		room.setAdmin(admin);*/
 		reservationRepository.deleteByRoomId(room.getId());
 		roomRepository.delete(room);
 		System.out.println(room_id);
+	}
+
+	@PutMapping
+	public Room updateRoom(@RequestBody Room upRoom){
+		Room existingRoom = roomRepository.findById(upRoom.getId()).orElseThrow(()->new RuntimeException("didn't find that room"));
+
+		Optional<Room> room=roomRepository.findByNum(upRoom.getNum());
+
+		if(room.isPresent() && (room.get()).getId()!=upRoom.getId()){
+			throw new RuntimeException("a room already has this number");
+		}
+
+
+		existingRoom.setCapacite(upRoom.getCapacite());
+		existingRoom.setImg(upRoom.getImg());
+		existingRoom.setDescription(upRoom.getDescription());
+		existingRoom.setName(upRoom.getName());
+		existingRoom.setType(upRoom.getType());
+		existingRoom.setNum(upRoom.getNum());
+
+		return roomRepository.save(existingRoom);
 	}
 }
