@@ -2,11 +2,11 @@ package com.example.demo.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Data
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype")
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +17,9 @@ public class User {
 	private String pwd;
 	private String tel;
 	private String img;
+	private String username;
+	private String role; // Roles: ADMIN, USER, etc.
+
 
 	// Getters and Setters
 	public long getId() {
@@ -73,5 +76,20 @@ public class User {
 
 	public void setImg(String img) {
 		this.img = img;
+	}
+	// Getter and Setter for username
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 }

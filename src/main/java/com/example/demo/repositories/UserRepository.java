@@ -11,10 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-	Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-	Optional<User> findById(Long id);
+    Optional<User> findById(Long id);
 
-	@Query("from User u where upper(u.name) like upper(concat('%',:keyword,'%') ) or upper(u.surname) like upper(concat('%',:keyword,'%') )")
-	List<User> findByNomContainingIgnoreCase(String keyword);
+    @Query("from User u where upper(u.name) like upper(concat('%',:keyword,'%') ) or upper(u.surname) like upper(concat('%',:keyword,'%') )")
+    List<User> findByNomContainingIgnoreCase(String keyword);
+
+    Optional<User> findByUsername(String username);
 }
